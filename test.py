@@ -42,8 +42,9 @@ def test(data,
          save_dir=Path(''),  # for saving images
          save_txt=False,  # for auto-labelling
          save_conf=False,
-         plots=True,
-         log_imgs=0):  # number of logged images
+         plots=False,
+         log_imgs=0,
+         eval_data='instances_val2017.json'):  # number of logged images
 
     # Initialize/load model and set device
     training = model is not None
@@ -78,7 +79,7 @@ def test(data,
 
     # Configure
     model.eval()
-    is_coco = data.endswith('coco.yaml')  # is COCO dataset
+    is_coco = 'coco' in data  # is COCO dataset
     with open(data) as f:
         data = yaml.load(f, Loader=yaml.FullLoader)  # model dict
     check_dataset(data)  # check
@@ -257,7 +258,7 @@ def test(data,
     # Save JSON
     if save_json and len(jdict):
         w = Path(weights[0] if isinstance(weights, list) else weights).stem if weights is not None else ''  # weights
-        anno_json = glob.glob('../coco/annotations/instances_val*.json')[0]  # annotations json
+        anno_json = glob.glob('../datasets/coco/annotations/' + eval_data)[0]  # annotations json
         pred_json = str(save_dir / f"{w}_predictions.json")  # predictions json
         print('\nEvaluating pycocotools mAP... saving %s...' % pred_json)
         with open(pred_json, 'w') as f:
@@ -293,6 +294,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
     parser.add_argument('--weights', nargs='+', type=str, default='yolor_p6.pt', help='model.pt path(s)')
     parser.add_argument('--data', type=str, default='data/coco.yaml', help='*.data path')
+    parser.add_argument('--eval-data', type=str, default='instances_val2017.json', help='pycocotools evaluation dataset')
     parser.add_argument('--batch-size', type=int, default=32, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=1280, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.001, help='object confidence threshold')
@@ -328,6 +330,7 @@ if __name__ == '__main__':
              opt.verbose,
              save_txt=opt.save_txt,
              save_conf=opt.save_conf,
+             eval_data=opt.eval_data
              )
 
     elif opt.task == 'study':  # run over a range of settings and save/plot

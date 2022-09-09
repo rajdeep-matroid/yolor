@@ -1295,3 +1295,31 @@ def flatten_recursive(path='../coco128'):
         shutil.copyfile(file, new_path / Path(file).name)
 
 
+
+
+class CalibratorImages(Dataset):
+    def __init__(self, path, img_size=640, auto=True, num_images=10, seed=10):
+        from glob import glob
+        self.files = glob(path)
+        random.seed(seed)
+        random.shuffle(self.files)
+        self.files = self.files[:num_images]
+        self.img_size = img_size
+        self.nf = len(self.files)
+        self.auto = auto
+
+        assert self.nf > 0
+    
+    def __len__(self):
+        return self.nf
+    
+    def __getitem__(self, index):
+        img = cv2.imread(self.files[index])
+        img = letterbox(img, self.img_size, auto=self.auto)[0]
+        img = img.transpose((2,0,1))[::-1]
+        img = np.ascontiguousarray(img)
+        img = img/255.0
+
+        return [torch.Tensor(img)]
+
+
