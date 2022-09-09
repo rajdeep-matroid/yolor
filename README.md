@@ -198,6 +198,42 @@ You will get the results:
 
 ![horses](https://github.com/WongKinYiu/yolor/blob/main/inference/output/horses.jpg)
 
+## TensorRT conversion
+
+**ONNX export for Triton Inference**
+
+```bash
+$ python convert_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.engine --simplify
+```
+
+**TensorRT**
+```bash
+$ python convert_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.engine --simplify --trt
+```
+
+**TensorRT with FP16**
+```bash
+$ python convet_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.cfg --simplify --trt --fp16
+```
+
+**TensorRT with INT8**
+```bash
+$ python  convert_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.cfg --simplify --trt --int8 --calibrate --calib-num-images 200 --calib-batch-size 4 --calib-algo minmax --seed 20
+```
+
+**TensorRT with NMS plugin**
+```bash
+$ python convert_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.cfg --simplify --trt --end2end_trt --conf-thres 0.45 --iou-thres 0.25 --topk-all 150
+```
+
+**TensorRT with sparsification**
+```bash
+$ python convert_to_onnx.py --weights yolor_csp.pt --cfg cfg/yolor_csp.cfg --simplify --trt --sparsify --prop 0.1 [--struct]
+```
+Set the --struct flag for structured pruning.
+
+For inference with the compiled TensorRT engines, use the files trt_inference.py and trt_inference_nms.py provided in YOLOv7
+
 ## Citation
 
 ```
