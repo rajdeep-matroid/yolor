@@ -144,9 +144,10 @@ bash scripts/get_pretrain.sh
 [`yolor_p6.pt`](https://drive.google.com/file/d/1Tdn3yqpZ79X7R1Ql0zNlNScB1Dv9Fp76/view?usp=sharing)
 
 ```
-python test.py --data data/coco.yaml --img 1280 --batch 32 --conf 0.001 --iou 0.65 --device 0 --cfg cfg/yolor_p6.cfg --weights yolor_p6.pt --name yolor_p6_val
+python test.py --data data/coco.yaml --img 1280 --batch 32 --conf 0.001 --iou 0.65 --device 0 --cfg cfg/yolor_p6.cfg --weights yolor_p6.pt --name yolor_p6_val --eval-data instances_val2017.json --save-json
 ```
 
+Pass the correct .json file as eval-data depending on whether you want to evaluate on COCO subset or COCO minival.
 You will get the results:
 
 ```
